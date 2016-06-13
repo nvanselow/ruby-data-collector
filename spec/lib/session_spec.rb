@@ -45,6 +45,15 @@ describe Session do
   end
 
   describe "#start" do
+    it "sets the start time" do
+      allow(Time).to receive(:now).and_return('current time', Time.now)
+      allow(Timeloop).to receive(:every)
+
+      session.start
+
+      expect(session.start_time).to eq('current time')
+    end
+
     it "starts the session timer" do
       expect(Timeloop).to receive(:every).with(1.seconds, maximum: 300)
 
@@ -52,14 +61,18 @@ describe Session do
     end
   end
 
-  describe "#end" do
-    it "returns the results" do
+  describe "#end_session" do
+    it "sets the end time" do
+      allow(Time).to receive(:now).and_return('current time')
 
+      session.end_session
+
+      expect(session.end_time).to eq('current time')
     end
   end
 
   describe "#monitor_session" do
-    it "it calls the #end method when the timer hits the session duration" do
+    it "calls the #end method when the timer hits the session duration" do
       expect(session).to receive(:end_session)
 
       session.monitor_session(300)
@@ -82,12 +95,71 @@ describe Session do
     end
 
     it "records the time the behavior was tracked" do
+      session.track(behavior.key)
+
+      expect(session.responses.size).to eq(1)
 
     end
 
     it "returns a message stating there is no behavior if an unknown letter is provided" do
       bad_key = "zzz"
       expect(session.track(bad_key)).to include("behavior does not exist")
+    end
+
+    it "calls the #end method when the key is 'q'" do
+      expect(session).to receive(:end_session)
+
+      session.track('q')
+    end
+
+    it "calls the #end method when the key is 'quit'" do
+      expect(session).to receive(:end_session)
+
+      session.track('quit')
+    end
+
+    it "calls end even if uppercase letters are used" do
+      expect(session).to receive(:end_session)
+
+      session.track('Q')
+    end
+  end
+
+  describe "#results" do
+    let(:behavior_frequency) { 3 }
+    let(:behavior_rate) { 3 / session.duration_in_min.to_f }
+
+    let(:behavior2) { Behavior.new("new behavior", "key 2") }
+    let(:behavior2_frequency) { 1 }
+    let(:behavior2_rate) { 1 / session.duration_in_min.to_f }
+
+    before do
+      session.add_behavior(behavior)
+      session.add_behavior(behavior2)
+
+      session.track(behavior.key)
+      session.track(behavior2.key)
+      session.track(behavior.key)
+      session.track(behavior.key)
+    end
+
+    it "returns a string that includes the session duration" do
+      expect(session.results).to include("Duration: #{session.duration_in_min}")
+    end
+
+    it "returns a string that includes a list of each behavior" do
+      expect(session.results).to include(behavior.name)
+      expect(session.results).to include(behavior2.name)
+    end
+
+    it "returns a string that includes the frequency of each behavior" do
+      expect(session.results).to include("#{behavior_frequency}")
+      expect(session.results).to include("#{behavior2_frequency}")
+    end
+
+    it "returns a string that includes the rate of each behavior" do
+      expect(session.results).to include("#{behavior_rate}")
+      expect(session.results).to include("#{behavior2_rate}")
     end
   end
 end
