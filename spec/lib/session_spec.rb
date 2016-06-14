@@ -4,6 +4,14 @@ describe Session do
   let(:session_duration) { 5 }
   let(:session) { Session.new(session_duration) }
   let(:behavior) { Behavior.new('behavior', 'key') }
+  let(:actual_session_duration) { (1 / 60.to_f).round(2) }
+
+  let(:task) { double("task", shutdown: true, execute: true) }
+
+  before do
+    allow(Time).to receive(:now).and_return('current time')
+    allow(Concurrent::TimerTask).to receive(:new).and_return(task)
+  end
 
   describe ".new" do
     it "creates a new session" do
@@ -47,7 +55,6 @@ describe Session do
   describe "#start" do
     it "sets the start time" do
       allow(Time).to receive(:now).and_return('current time', Time.now)
-      allow(Timeloop).to receive(:every)
 
       session.start
 
@@ -55,7 +62,7 @@ describe Session do
     end
 
     it "starts the session timer" do
-      expect(Timeloop).to receive(:every).with(1.seconds, maximum: 300)
+      expect(Concurrent::TimerTask).to receive(:new).with(execution_interval: 1, timeout_interval: 300)
 
       session.start
     end
@@ -63,8 +70,7 @@ describe Session do
 
   describe "#end_session" do
     it "sets the end time" do
-      allow(Time).to receive(:now).and_return('current time')
-
+      session.start
       session.end_session
 
       expect(session.end_time).to eq('current time')
@@ -127,11 +133,11 @@ describe Session do
 
   describe "#results" do
     let(:behavior_frequency) { 3 }
-    let(:behavior_rate) { 3 / session.duration_in_min.to_f }
+    let(:behavior_rate) { (3 / actual_session_duration).round(2) }
 
     let(:behavior2) { Behavior.new("new behavior", "key 2") }
     let(:behavior2_frequency) { 1 }
-    let(:behavior2_rate) { 1 / session.duration_in_min.to_f }
+    let(:behavior2_rate) { (1 / actual_session_duration).round(2) }
 
     before do
       session.add_behavior(behavior)
@@ -160,6 +166,21 @@ describe Session do
     it "returns a string that includes the rate of each behavior" do
       expect(session.results).to include("#{behavior_rate}")
       expect(session.results).to include("#{behavior2_rate}")
+    end
+  end
+
+  describe "#running" do
+    it "returns true if the session is running" do
+      session.start
+
+      expect(session.running).to eq(true)
+    end
+
+    it "returns false if the session has stopped" do
+      session.start
+      session.end_session
+
+      expect(session.running).to eq(false)
     end
   end
 end

@@ -16,7 +16,6 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    timeloop (2.0.0)
 
 PLATFORMS
   ruby
@@ -24,7 +23,6 @@ PLATFORMS
 DEPENDENCIES
   gosu
   rspec
-  timeloop
 
 BUNDLED WITH
    1.11.2
