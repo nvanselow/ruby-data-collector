@@ -1,1 +1,3 @@
 --color
+--order default
+--fail-fast

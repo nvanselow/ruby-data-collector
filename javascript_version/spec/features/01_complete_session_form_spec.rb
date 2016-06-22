@@ -8,7 +8,16 @@ feature "create a session" do
     click_button("Start Session")
 
     expect(page).to have_content("Please enter a session duration")
-    save_screenshot('screenshot.png')
+  end
+
+  scenario "user does not create any behaviors" do
+    visit '/'
+
+    fill_in('session-duration', with: '5')
+
+    click_button("Start Session")
+
+    expect(page).to have_content("Please enter at least one behavior")
   end
 
 end
