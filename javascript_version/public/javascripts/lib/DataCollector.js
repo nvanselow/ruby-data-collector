@@ -10,24 +10,40 @@ var hideFormError = function(){
   $('#new-session-error').hide();
 };
 
-var addBehaviorToList = function(behavior){
+var createBaseBehavior = function(behavior, add_buttons){
   var name = $('<h5>', {class: "behavior-name", text: behavior.name});
   var key = $('  <h5>("<span class="behavior-key">' + behavior.key +'</span>")</h5>');
   var descriptionLabel = $('<span>', {text: "Description:"});
   var description = $('<p>', {class: "behavior-description", text: behavior.description});
   var wrappingDiv = $('<div>', {class: "behavior columns small-12 medium-6"});
-  var row = $('<div>', {class: "row"});
   var nameColumn = $('<div>', {class: "columns small-10"});
-  var buttonColumn = $('<div>', {class: "columns small-2"});
-  var deleteButton = $('<button>', {class: "button alert small delete-button", text: "Delete"});
+  var row = $('<div>', {class: "row"});
 
   nameColumn.append(name, key);
-  buttonColumn.append(deleteButton);
-  row.append(nameColumn, buttonColumn);
+  row.append(nameColumn);
+
+  var deleteButton;
+  if(add_buttons){
+    var buttonColumn = $('<div>', {class: "columns small-2"});
+    deleteButton = $('<button>', {class: "button alert small delete-button", text: "Delete"});
+    buttonColumn.append(deleteButton);
+    row.append(buttonColumn);
+  }
+
   var behaviorDiv = wrappingDiv.append(row, descriptionLabel, description);
 
-  $("#behavior-list").append(behaviorDiv);
-  deleteButton.click(removeBehavior);
+  if(add_buttons){
+    return {behaviorDiv: behaviorDiv, deleteButton: deleteButton};
+  } else {
+    return behaviorDiv;
+  }
+};
+
+var addBehaviorToList = function(behavior){
+  var html = createBaseBehavior(behavior, true);
+
+  $("#behavior-list").append(html.behaviorDiv);
+  html.deleteButton.click(removeBehavior);
 };
 
 var clearBehaviorForm = function(){
@@ -90,12 +106,36 @@ var startSession = function(event){
   session.durationInMin = sessionDuration;
 
   if(validSession()){
-      // start running the session
-      
+    $('#new-session').hide();
+    $('#run-session').show();
   }
 };
 
+var trackBehavior = function(event){
+
+};
+
+var prepareSession = function(){
+  //Add basic session info
+  $('#session-duration').text(session.durationInSeconds);
+  $('#current-session-time').text(session.currentTime);
+
+  //Add behaviors
+  session.behaviors.forEach(function(behavior){
+    var frequencyDiv = $('<div class="row"><div class="columns small-12">Frequency: </div></div>');
+    var frequency = $('<span>', {id: 'frequency_' + behavior.key});
+    frequencyDiv.append(frequency);
+
+    var behaviorDiv = createBaseBehavior(behavior);
+    behaviorDiv.append(frequency);
+
+    behaviorDiv.click(trackBehavior);
+    behaviorDiv.addClass('disabled-div');
+  });
+};
+
 $(document).ready(function(){
+  $('#run-session').hide();
   $("#new-session-error").hide();
   $("#add-behavior-button").click(addBehavior);
   $("#new-session-form").submit(startSession);

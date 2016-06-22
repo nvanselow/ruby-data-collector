@@ -7,9 +7,10 @@
   padding: 20px;
 }
 
-/*.new-behavior-form {
-  margin-left: 15px;
-}*/
+.disabled-div {
+    pointer-events: none;
+    opacity: 0.4;
+}
 
 .new-behavior-form h4 {
   margin-left: 0;

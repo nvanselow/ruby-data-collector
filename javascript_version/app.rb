@@ -19,5 +19,5 @@ Dir[File.join(File.dirname(__FILE__), 'app', '**', '*.rb')].each do |file|
 end
 
 get '/' do
-  erb :new_session
+  erb :data_collector
 end
