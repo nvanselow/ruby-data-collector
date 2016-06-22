@@ -12,10 +12,14 @@ require 'shoulda/matchers'
 set :environment, :test
 set :database, :test
 
-ActiveRecord::Base.logger.level = 1
+# No ActiveRecord for now.
+# ActiveRecord::Base.logger.level = 1
 
+Capybara.current_driver = :poltergeist
 Capybara.javascript_driver = :poltergeist
 Capybara.app = Sinatra::Application
+
+# Capybara::Poltergeist::Driver.new Sinatra::Application, {debug: true}
 
 RSpec.configure do |config|
   config.backtrace_exclusion_patterns << /.rubies/
