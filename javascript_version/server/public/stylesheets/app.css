@@ -1,0 +1,56 @@
+.container {
+  margin: 30px;
+}
+
+#new-session {
+  border: 1px solid black;
+  padding: 20px;
+}
+
+/*.new-behavior-form {
+  margin-left: 15px;
+}*/
+
+.new-behavior-form h4 {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.behaviors {
+  margin-top: 10px;
+  /*margin-left: 15px;*/
+}
+
+.behaviors h4 {
+  display: inline-block;
+}
+
+.behaviors #add-behavior-button {
+  margin-left: 15px;
+}
+
+.behaviors #behavior-list {
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+.behaviors .behavior {
+  border: 1px dashed black;
+  padding: 10px;
+  height: 150px;
+  overflow: hidden;
+}
+
+.behaviors .behavior h5 {
+  display: inline;
+}
+
+.behaviors .behavior span {
+  font-size: 1.1em;
+  font-style: italic;
+}
+
+.behaviors .behavior p {
+  margin: 0;
+  padding: 0;
+}

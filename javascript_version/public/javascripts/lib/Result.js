@@ -4,6 +4,6 @@ var Result = function(durationInMin, behaviors, responses){
   this.responses = responses;
 
   this.behaviors.forEach(function(behavior){
-    behavior.rate = (behavior.frequency / this.durationInMin).toFixed(2);
+    behavior.rate = (behavior.frequency / this.durationInMin).toFixed(2); 
   });
 };
