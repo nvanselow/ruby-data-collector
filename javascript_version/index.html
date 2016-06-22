@@ -18,6 +18,7 @@
     <script src="lib/Response.js" charset="utf-8"></script>
     <script src="lib/Result.js" charset="utf-8"></script>
     <script src="lib/Session.js" charset="utf-8"></script>
+    <script src="lib/DataCollector.js" charset="utf-8"></script>
   </head>
   <body>
     <nav class="top-bar">
@@ -31,6 +32,7 @@
 
       <div id="new-session">
         <h2>New Session:</h2>
+
         <form class="new-session-form" id="new-session-form">
           <div class="row">
             <div class="medium-6 columns">
@@ -40,20 +42,67 @@
             </div>
           </div>
 
-          <div class="behaviors">
-            <h4>Behaviors:</h4>
-            <button type="button" class="button success hollow" id="add-behavior-button">
-              <i class="fa fa-plus-circle" ></i> Add Behavior
-            </button>
+          <div class="new-behavior-form callout primary">
+            <div class="row">
+              <div class="columns">
+                <h4>New Behavior:</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="medium-6 columns">
+                <div class="row">
+                  <div class="columns">
+                    <label>Name:
+                      <input type="text" id="behavior-name" name="behavior[name]" placeholder="Aggression"required>
+                    </label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="columns">
+                    <label>Keyboard Key:
+                      <input type="text" id="behavior-key" name="behavior[key]" placeholder="m" required>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="medium-6 columns">
+                <label>Description (optional):
+                  <textarea id="behavior-description" name="behavior[description]" rows="4"></textarea>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="columns">
+                <button type="button" class="button success" id="add-behavior-button">
+                  <i class="fa fa-plus-circle" ></i> Add Behavior
+                </button>
+              </div>
+            </div>
+          </div>
 
-            <div id="behavior-list">
-              <div class="row">
-                <div class="behavior columns small-12 medium-6">
-                  <h5>Behavior Name ("M")</h5>
-                  <span>Description:</span>
-                  <p>
-                    The description of the behavior.
-                  </p>
+          <div class="row">
+            <div class="columns">
+              <div class="behaviors">
+                <h4>Behaviors:</h4>
+                <p id="no-behavior-message">
+                  There are no behaviors. Add some by completing the form above.
+                </p>
+                <div id="behavior-list" class="row">
+                  <!-- <div class="behavior columns small-12 medium-6">
+                    <div class="row">
+                      <div class="columns small-8">
+                        <h5 class="behavior-name">Behavior Name</h5>
+                        <h5 class="behavior-key">("M")</h5>
+                      </div>
+                      <div class="columns small-2">
+                        <button class="button alert small delete-button">Delete</button><br>
+                      </div>
+                    </div>
+                    <span>Description:</span>
+                    <p class="behavior-description">
+                      The description of the behavior.
+                    </p>
+                  </div> -->
                 </div>
               </div>
             </div>

@@ -46,6 +46,42 @@ describe("Session", function(){
       expect(session.behaviors.length).toEqual(3);
       expect(session.behaviors).not.toContain(behavior);
     });
+
+    it("tries to remove a behavior not on the list", function(){
+      session.addBehavior(new Behavior('distractor', 'm'));
+      session.addBehavior(new Behavior('distractor 2', 'm'));
+      session.addBehavior(new Behavior('distractor 3', 'm'));
+
+      session.removeBehavior(behavior);
+
+      expect(session.behaviors.length).toEqual(3);
+      expect(session.behaviors).not.toContain(behavior);
+    });
+  });
+
+  describe(".removeBehaviorByName", function(){
+    it("removes a behavior based on the name", function(){
+      session.addBehavior(new Behavior('distractor', 'm'));
+      session.addBehavior(behavior);
+      session.addBehavior(new Behavior('distractor 2', 'm'));
+      session.addBehavior(new Behavior('distractor 3', 'm'));
+
+      session.removeBehaviorByName(behavior.name);
+
+      expect(session.behaviors.length).toEqual(3);
+      expect(session.behaviors).not.toContain(behavior);
+    });
+
+    it("does not remove any behaviors if the name does not match anything", function(){
+      session.addBehavior(new Behavior('distractor', 'm'));
+      session.addBehavior(new Behavior('distractor 2', 'm'));
+      session.addBehavior(new Behavior('distractor 3', 'm'));
+
+      session.removeBehaviorByName(behavior.name);
+
+      expect(session.behaviors.length).toEqual(3);
+      expect(session.behaviors).not.toContain(behavior);
+    });
   });
 
   describe(".start", function(){

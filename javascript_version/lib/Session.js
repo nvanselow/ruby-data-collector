@@ -17,7 +17,19 @@ var Session = function(durationInMin){
   this.removeBehavior = function(behavior){
     if(behavior){
       var index = this.behaviors.indexOf(behavior);
-      this.behaviors.splice(index, 1);
+      if(index > 0){
+        this.behaviors.splice(index, 1);
+      }
+    }
+  };
+
+  this.removeBehaviorByName = function(name){
+    if(name){
+      for(var i = 0; i < this.behaviors.length; i++){
+        if(this.behaviors[i].name === name){
+          this.behaviors.splice(i, 1);
+        }
+      }
     }
   };
 

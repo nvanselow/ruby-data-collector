@@ -7,14 +7,22 @@
   padding: 20px;
 }
 
+/*.new-behavior-form {
+  margin-left: 15px;
+}*/
+
+.new-behavior-form h4 {
+  margin-left: 0;
+  padding-left: 0;
+}
+
 .behaviors {
   margin-top: 10px;
-  margin-left: 15px;
+  /*margin-left: 15px;*/
 }
 
 .behaviors h4 {
   display: inline-block;
-  margin: 10px;
 }
 
 .behaviors #add-behavior-button {
@@ -29,6 +37,12 @@
 .behaviors .behavior {
   border: 1px dashed black;
   padding: 10px;
+  height: 150px;
+  overflow: hidden;
+}
+
+.behaviors .behavior h5 {
+  display: inline;
 }
 
 .behaviors .behavior span {
