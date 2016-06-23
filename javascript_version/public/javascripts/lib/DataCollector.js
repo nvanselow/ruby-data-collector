@@ -139,7 +139,7 @@ var trackBehaviorByKey = function(event){
 
 var prepareSession = function(){
   //Add basic session info
-  $('#session-duration').text(session.durationInSeconds);
+  $('#run-session-duration').text(session.durationInSeconds());
   $('#current-session-time').text(session.currentTime);
 
   //Add behaviors
@@ -164,9 +164,17 @@ var prepareSession = function(){
 
 var tick = function(){
   $('#current-session-time').text(session.currentTime);
-  if(!session.running){
-    endSession();
-  }
+};
+
+var endSession = function(){
+  $('#run-session').hide();
+
+  showResults();
+  $('#results').show();
+};
+
+var terminateSessionEarly = function(){
+  session.end();
 };
 
 var runSession = function(event){
@@ -176,13 +184,31 @@ var runSession = function(event){
   $('#current-session-time').text(session.currentTime);
   $('.start').hide();
   $('.end').show();
-  $('#end-session-button').click(endSession);
+  $('#end-session-button').click(terminateSessionEarly);
   $('body').keypress(trackBehaviorByKey);
-  session.start(tick);
+  session.start(tick, endSession);
 };
 
-var endSession = function(){
-  session.end();
-  $('#run-session').hide();
-  $('#results').show();
+var showResults = function(){
+  var results = session.results();
+
+  $('#planned-session-duration').text(session.durationInSeconds());
+  $('#actual-session-duration').text(session.endTime);
+
+  results.behaviors.forEach(function(behavior){
+    var nameColumn = $('<td>', {text: behavior.name, class: "text-center"});
+    var frequencyColumn = $('<td>', {text: behavior.frequency.toString(), class: "text-center"});
+    var rateColumn = $('<td>', {text: behavior.rate.toString(), class: "text-center"});
+    var behaviorRow = $('<tr>');
+    behaviorRow.append(nameColumn, frequencyColumn, rateColumn);
+    $('#behavior-results').append(behaviorRow);
+  });
+
+  session.responses.forEach(function(response){
+    var timeColumn = $('<td>', {text: response.time, class: "text-center"});
+    var behaviorColumn = $('<td>', {text: response.behavior.name, class: "text-center"});
+    var responseRow = $('<tr>');
+    responseRow.append(timeColumn, behaviorColumn);
+    $('#all-responses').append(responseRow);
+  });
 };

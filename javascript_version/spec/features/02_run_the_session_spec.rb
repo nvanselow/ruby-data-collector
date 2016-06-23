@@ -65,8 +65,7 @@ feature "run the session" do
   end
 
   scenario "the session times out" do
-    end_of_session = 299
-    session = page.execute_script("session.currentTime = #{end_of_session};")
+    session = page.execute_script("session.currentTime = #{sessionDuration - 1};")
 
     click_button("Start")
 

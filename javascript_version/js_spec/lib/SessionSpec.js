@@ -1,8 +1,9 @@
 describe("Session", function(){
-  var sessionDuration, session, behavior, actualSessionDuration, key;
+  var sessionDuration, sessionDurationInSec, session, behavior, actualSessionDuration, key;
 
   beforeEach(function(){
     sessionDuration = 5;
+    sessionDurationInSec = sessionDuration * 60;
     session = new Session(sessionDuration);
     key = 'm';
     behavior = new Behavior('behavior', key);
@@ -120,7 +121,7 @@ describe("Session", function(){
 
     it("ends the session if the total duration has been reached", function(){
       session.end = jasmine.createSpy("end() spy");
-      session.currentTime = session.durationInSeconds;
+      session.currentTime = session.durationInSeconds();
 
       session.tick();
 
@@ -212,13 +213,20 @@ describe("Session", function(){
   });
 
   describe(".results", function(){
-    var behaviorFrequency = 3;
-    var behaviorRate = (3 / sessionDuration).toFixed(2);
-    var behavior2 = new Behavior("new beahvior", "key 2");
-    var behavior2Frequency = 1;
-    var behavior2Rate = (1 / sessionDuration).toFixed(2);
+    var behaviorFrequency,
+        behaviorRate,
+        behavior2,
+        behavior2Frequency,
+        behavior2Rate;
 
     beforeEach(function(){
+      behaviorFrequency = 3;
+      behaviorRate = (3 / sessionDuration).toFixed(2);
+      behavior2 = new Behavior("new beahvior", "key 2");
+      behavior2Frequency = 1;
+      behavior2Rate = (1 / sessionDuration).toFixed(2);
+
+      session.endTime = sessionDurationInSec;
       session.addBehavior(behavior);
       session.addBehavior(behavior2);
 
@@ -229,7 +237,7 @@ describe("Session", function(){
     });
 
     it("returns a Result that includes the session duration", function(){
-      expect(session.results().durationInMin).toEqual(sessionDuration);
+      expect(session.results().durationInMin).toEqual(sessionDuration.toFixed(2));
     });
 
     it("returns a Result that includes a list of each behavior", function(){
@@ -239,7 +247,7 @@ describe("Session", function(){
 
     it("returns a Result that includes the rate of each beahvior", function(){
       expect(session.results().behaviors[0].rate).toEqual(behaviorRate);
-      expect(session.results().behaviors[0].rate).toEqual(behavior2Rate);
+      expect(session.results().behaviors[1].rate).toEqual(behavior2Rate);
     });
   });
 });

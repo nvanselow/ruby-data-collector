@@ -1,6 +1,6 @@
 var Behavior = function(name, key, description){
   this.name = name;
-  this.key = key;
+  this.key = key.toLowerCase();
   this.description = description;
   this.frequency = 0;
   this.rate = null;

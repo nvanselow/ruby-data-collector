@@ -1,6 +1,5 @@
 var Session = function(durationInMin){
   this.durationInMin = durationInMin;
-  this.durationInSeconds = durationInMin * 60;
   this.behaviors = [];
   this.currentTime = 0;
   this.timerId = null;
@@ -8,6 +7,11 @@ var Session = function(durationInMin){
   this.endTime = 0;
   this.responses = [];
   this.running = false;
+  this.completeCallback = null;
+
+  this.durationInSeconds = function(){
+    return this.durationInMin * 60;
+  };
 
   this.addBehavior = function(behavior){
     if(behavior){
@@ -56,15 +60,21 @@ var Session = function(durationInMin){
     }
   };
 
-  this.start = function(callback){
-    this.startTimer(callback);
+  this.start = function(timerCallback, completeCallback){
+    this.startTimer(timerCallback);
     this.running = true;
+    if(completeCallback){
+      this.completeCallback = completeCallback;
+    }
   };
 
   this.end = function(){
     this.stopTimer();
     this.running = false;
     this.endTime = this.currentTime;
+    if(this.completeCallback){
+      this.completeCallback();
+    }
   };
 
   this.startTimer = function(callback){
@@ -81,16 +91,17 @@ var Session = function(durationInMin){
 
   this.stopTimer = function(){
     clearInterval(this.timerId);
+    clearInterval(this.callbackTimerId);
   };
 
   this.tick = function(){
     this.currentTime++;
-    if(this.currentTime >= this.durationInSeconds){
+    if(this.currentTime >= this.durationInSeconds()){
       this.end();
     }
   };
 
   this.results = function(){
-    return new Result(this.durationInMin, this.behaviors, this.responses);
+    return new Result(this.endTime, this.behaviors, this.responses);
   };
 };

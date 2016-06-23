@@ -24,6 +24,12 @@ describe("Behavior", function(){
     it("returns the key of the behavior", function(){
       expect(behavior.key).toEqual(key);
     });
+
+    it("is always lowercase", function(){
+      behavior = new Behavior(name, "M", description);
+
+      expect(behavior.key).toEqual('m');
+    });
   });
 
   describe(".description", function(){
