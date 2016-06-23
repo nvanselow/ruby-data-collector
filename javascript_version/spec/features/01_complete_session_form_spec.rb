@@ -21,6 +21,8 @@ feature "create a session" do
   scenario "user does not enter session duration" do
     visit '/'
 
+    fill_in('session-duration', with: "")
+
     click_button("Start Session")
 
     expect(page).to have_content("Please enter a session duration")

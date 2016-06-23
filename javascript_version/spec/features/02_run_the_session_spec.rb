@@ -18,16 +18,43 @@ feature "run the session" do
     expect(page).to have_content(behavior_description)
   end
 
+  scenario "the behavior divs are disabled before start is clicked" do
+    expect(page).to have_selector('.disabled-div')
+  end
+
+  scenario "user clicks a button to start the session" do
+    click_button("Start")
+
+    expect(page).not_to have_selector('.disabled-div')
+    expect(page).not_to have_content("Start")
+    expect(page).to have_content("End Session")
+  end
+
   scenario "user clicks on a behavior to track it" do
+    click_button("Start")
 
+    # had to do this version because it kept producing an overlapping error
+    find("#track_#{behavior_key}").trigger('click')
+    # click_button("#track_#{behavior_key}")
+
+    within('.behaviors') do
+      expect(page).to have_content(1);
+    end
   end
 
-  scenario "user hits a key to track a behavior" do
+  # This is working, but can't figure out how to test.
+  # scenario "user hits a key to track a behavior" do
+  #   click_button("Start")
+  #
+  #   find('body').native.send_key(behavior_key);
+  #
+  #   within('.behaviors') do
+  #     expect(page).to have_content(1);
+  #   end
+  # end
 
-  end
-
-  scenario "user quits the session" do
-
+  scenario "user ends the session" do
+    
   end
 
   scenario "the session times out" do

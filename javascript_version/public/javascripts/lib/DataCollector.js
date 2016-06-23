@@ -1,5 +1,12 @@
 var session = new Session(5);
 
+$(document).ready(function(){
+  $('#run-session').hide();
+  $("#new-session-error").hide();
+  $("#add-behavior-button").click(addBehavior);
+  $("#new-session-form").submit(startSession);
+});
+
 var showFormError = function(text){
   var error = $('#new-session-error');
   error.text(text);
@@ -108,11 +115,25 @@ var startSession = function(event){
   if(validSession()){
     $('#new-session').hide();
     $('#run-session').show();
+    $('.end').hide();
+    prepareSession();
   }
 };
 
 var trackBehavior = function(event){
+  var behavior = event.data.behavior;
+  // behavior.increment();
+  session.track(behavior.key);
 
+  $('#frequency_' + behavior.key).text(behavior.frequency);
+};
+
+var trackBehaviorByKey = function(event){
+  var behavior = session.track(event.key);
+
+  if(behavior){
+    $('#frequency_' + event.key).text(behavior.frequency);
+  }
 };
 
 var prepareSession = function(){
@@ -122,21 +143,34 @@ var prepareSession = function(){
 
   //Add behaviors
   session.behaviors.forEach(function(behavior){
-    var frequencyDiv = $('<div class="row"><div class="columns small-12">Frequency: </div></div>');
-    var frequency = $('<span>', {id: 'frequency_' + behavior.key});
-    frequencyDiv.append(frequency);
+    frequencyDivHtml = '<div class="row">' +
+      '<div class="columns small-12">' +
+        'Frequency: <span id="frequency_' + behavior.key +'">0</span>' +
+        '</div></div>';
+    var frequency = $(frequencyDivHtml);
+    var trackingButton = $('<button>', {id: 'track_' + behavior.key, class: 'button', text: 'Track Behavior ' + behavior.name});
 
     var behaviorDiv = createBaseBehavior(behavior);
-    behaviorDiv.append(frequency);
+    behaviorDiv.append(frequency, trackingButton);
 
-    behaviorDiv.click(trackBehavior);
-    behaviorDiv.addClass('disabled-div');
+    $('#session-behaviors').append(behaviorDiv);
+    trackingButton.click({behavior: behavior}, trackBehavior);
   });
+
+  $('#session-behaviors').addClass('disabled-div');
+  $('#start-session-button').click(runSession);
 };
 
-$(document).ready(function(){
-  $('#run-session').hide();
-  $("#new-session-error").hide();
-  $("#add-behavior-button").click(addBehavior);
-  $("#new-session-form").submit(startSession);
-});
+var tick = function(){
+  $('#current-session-time').text(session.currentTime);
+};
+
+var runSession = function(event){
+  event.preventDefault();
+
+  $('#session-behaviors').removeClass('disabled-div');
+  $('.start').hide();
+  $('.end').show();
+  $('body').keypress(trackBehaviorByKey);
+  session.start(tick);
+};

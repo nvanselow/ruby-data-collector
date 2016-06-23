@@ -165,10 +165,10 @@ describe("Session", function(){
       expect(response).toEqual(behavior);
     });
 
-    it("returns a message stating there is no behavior if an unknown letter is provided", function(){
+    it("returns a null if an unknown letter is provided", function(){
       var response = session.track("unknown key");
 
-      expect(response).toEqual("Behavior does not exist. Try a different key.");
+      expect(response).toEqual(null);
     });
 
     it("calls the end function when the key is 'q'", function(){

@@ -4,6 +4,7 @@ var Session = function(durationInMin){
   this.behaviors = [];
   this.currentTime = 0;
   this.timerId = null;
+  this.callbackTimerId = null;
   this.endTime = 0;
   this.responses = [];
   this.running = false;
@@ -50,13 +51,13 @@ var Session = function(durationInMin){
         this.responses.push(new Response(selectedBehavior, this.currentTime));
         return selectedBehavior;
       } else {
-        return 'Behavior does not exist. Try a different key.';
+        return null;
       }
     }
   };
 
-  this.start = function(){
-    this.startTimer();
+  this.start = function(callback){
+    this.startTimer(callback);
     this.running = true;
   };
 
@@ -66,8 +67,16 @@ var Session = function(durationInMin){
     this.endTime = this.currentTime;
   };
 
-  this.startTimer = function(){
-    this.timerId = setInterval(this.tick, 1000);
+  this.startTimer = function(callback){
+    // need this craziness to maintain context for tick function
+    this.timerId = setInterval((
+      function(self){
+        return function(){ self.tick(); };
+      })(this),
+      1000);
+    if(callback){
+      this.callbackTimerId = setInterval(callback, 1000);
+    }
   };
 
   this.stopTimer = function(){
