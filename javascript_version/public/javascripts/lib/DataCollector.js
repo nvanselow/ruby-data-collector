@@ -163,14 +163,25 @@ var prepareSession = function(){
 
 var tick = function(){
   $('#current-session-time').text(session.currentTime);
+  if(!session.running){
+    endSession();
+  }
 };
 
 var runSession = function(event){
   event.preventDefault();
 
   $('#session-behaviors').removeClass('disabled-div');
+  $('#current-session-time').text(session.currentTime);
   $('.start').hide();
   $('.end').show();
+  $('#end-session-button').click(endSession);
   $('body').keypress(trackBehaviorByKey);
   session.start(tick);
+};
+
+var endSession = function(){
+  session.end();
+  $('#run-session').hide();
+  $('#results').show();
 };

@@ -42,23 +42,35 @@ feature "run the session" do
     end
   end
 
-  # This is working, but can't figure out how to test.
-  # scenario "user hits a key to track a behavior" do
-  #   click_button("Start")
-  #
-  #   find('body').native.send_key(behavior_key);
-  #
-  #   within('.behaviors') do
-  #     expect(page).to have_content(1);
-  #   end
-  # end
+  scenario "user hits a key to track a behavior" do
+    click_button("Start")
+
+    # This one wasn't working
+    # find('body').native.send_key(behavior_key);
+
+    page.execute_script("$('body').trigger({ type: 'keypress', which: 109, key: 'm' });")
+
+    within('.behaviors') do
+      expect(page).to have_content(1);
+    end
+  end
 
   scenario "user ends the session" do
-    
+    click_button("Start")
+
+    click_button("Stop Session")
+
+    expect(page).to have_content('Results')
+    expect(page).not_to have_content('Run Session')
   end
 
   scenario "the session times out" do
+    end_of_session = 299
+    session = page.execute_script("session.currentTime = #{end_of_session};")
 
+    click_button("Start")
+
+    expect(page).to have_content('Results');
   end
 
 end
