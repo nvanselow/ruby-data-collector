@@ -2,6 +2,7 @@ var session = new Session(5);
 
 $(document).ready(function(){
   $('#run-session').hide();
+  $('#results').hide();
   $("#new-session-error").hide();
   $("#add-behavior-button").click(addBehavior);
   $("#new-session-form").submit(startSession);
